@@ -6,12 +6,14 @@
  * @LastEditTime:  04/18/2025 10:30:27
  * @Description: Implementation of a simple HTTP server that serves a chatbot interface and handles chat requests.
  '''
-
+import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-import openai
+from openai import OpenAI
 
-api_key = "your_api_key_here"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+api_key = "your_api_key_here"  
 
 class ChatBotHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -19,20 +21,22 @@ class ChatBotHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            with open("home.html", "rb") as file:
+            with open(os.path.join(BASE_DIR, "home.html"), "rb") as file:             
                 self.wfile.write(file.read())
         elif self.path == "/style.css":
             self.send_response(200)
             self.send_header("Content-type", "text/css")
             self.end_headers()
-            with open("style.css", "rb") as file:
+            with open(os.path.join(BASE_DIR, "style.css"), "rb") as file:
                 self.wfile.write(file.read())
         else:
             self.send_response(404)
             self.end_headers()
 
     def do_POST(self):
+        
         if self.path == "/chatbot/":
+            
             content_length = int(self.headers["Content-Length"])
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data)
@@ -45,21 +49,26 @@ class ChatBotHandler(BaseHTTPRequestHandler):
                 return
 
             try:
-                with open("System_Prompt.txt", "r") as file:
+                with open(os.path.join(BASE_DIR, "System_Prompt.txt"), "r") as file:                                           
                     chatbot_prompt = file.read()
             except Exception as e:
                 chatbot_prompt = "Default prompt: Unable to load system prompt."
+                print(f"Error loading system prompt: {e}")
+
+            
 
             try:
-                openai.api_key = api_key
-                response = openai.ChatCompletion.create(
-                    model="gpt-4",
+                
+                client = OpenAI(api_key = api_key)
+           
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": chatbot_prompt},
                         {"role": "user", "content": user_message},
                     ],
                 )
-                reply = response["choices"][0]["message"]["content"]
+                reply = response.choices[0].message.content
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
@@ -68,7 +77,10 @@ class ChatBotHandler(BaseHTTPRequestHandler):
                 self.send_response(500)
                 self.end_headers()
                 self.wfile.write(json.dumps({"reply": f"❗ OpenAI error: {str(e)}"}).encode())
-
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b"404 Not Found")
 if __name__ == "__main__":
     server_address = ("", 8000)
     httpd = HTTPServer(server_address, ChatBotHandler)
