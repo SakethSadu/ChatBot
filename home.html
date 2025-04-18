@@ -1,0 +1,85 @@
+<!--
+ * @FileName: home.html
+ * @Project: ChatBot Application
+ * @Author: Saketh Sadu
+ * @Date: 12/23/2024 17:10:47
+ * @LastEditTime:  04/18/2025 10:30:27
+ * @Description: Home page for the ChatBot application.
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot Home</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to ChatBot</h1>
+    </header>
+    <main>
+        <h2>Interact with our intelligent chatbot</h2>
+    </main>
+    <div id="chat-widget">
+        <button id="chat-toggle">💬</button>
+        
+        <div id="chat-box">
+            <div id="chat-header">AI Assistant</div>
+            <div id="chat-messages">
+                <p><strong>Bot:</strong> Hi there! 👋<br>How can I help you today?</p>
+                <button onclick="sendQuickMessage('Weather forecasting?')">How is weather today?</button><br>
+                <button onclick="sendQuickMessage('How can your services help me?')">💼 How can you help me?</button>
+            </div>
+            <div id="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Type a message..." />
+                <button id="chat-send">➤</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const toggleBtn = document.getElementById("chat-toggle");
+        const chatBox = document.getElementById("chat-box");
+        const chatInput = document.getElementById("chat-input");
+        const chatMessages = document.getElementById("chat-messages");
+        const chatSend = document.getElementById("chat-send");
+
+        toggleBtn.onclick = () => {
+            chatBox.style.display = chatBox.style.display === "none" ? "flex" : "none";
+        };
+
+        chatSend.onclick = () => {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            appendMessage("You", message);
+            chatInput.value = "";
+
+            fetch("/chatbot/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            })
+            .then(res => res.json())
+            .then(data => {
+                appendMessage("Bot", data.reply);
+            })
+            .catch(() => {
+                appendMessage("Bot", "❗ Sorry, something went wrong.");
+            });
+        };
+
+        function appendMessage(sender, text) {
+            const p = document.createElement("p");
+            p.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatMessages.appendChild(p);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendQuickMessage(msg) {
+            chatInput.value = msg;
+            chatSend.click();
+        }
+    </script>
+</body>
+</html>

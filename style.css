@@ -1,0 +1,100 @@
+/*
+ * @FileName: style.css
+ * @Project: ChatBot Application
+ * @Author: Saketh Sadu
+ * @Date: 12/23/2024 17:10:47
+ * @LastEditTime:  04/18/2025 10:30:27
+ * @Description: This file contains the CSS styles for the ChatBot application.
+ */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+}
+/*For Chatbox  */
+#chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: 'Arial', sans-serif;
+}
+
+#chat-toggle {
+    width: 55px;
+    height: 55px;
+    background: skyblue;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#chat-box {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 320px;
+    height: 500px;
+    max-height: 700px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+}
+
+#chat-header {
+    background: linear-gradient(to right, skyblue, skyblue);
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#chat-messages {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    overflow-y: auto;
+}
+
+#chat-input-container {
+    display: flex;
+    border-top: 1px solid black;
+}
+
+#chat-input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+}
+
+#chat-send {
+    background: skyblue;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
