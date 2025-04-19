@@ -1,7 +1,7 @@
 This is a simple yet useful way to have a chatbot for your web application developed using python.
 
 Requirements:
-1) Open AI Dev account - go to open AI Dev and create a api key.
+1) OpenAI Dev account - go to openAI Dev and create an api key.
 2) After setting up the Project install openAI using pip install openai
 
 Process:
